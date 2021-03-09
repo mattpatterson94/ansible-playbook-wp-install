@@ -19,9 +19,15 @@ cp .envrc.example .envrc
 cp inventory.example inventory
 ```
 
-2. Modify envrc and inventory to have the values required
+1. Install Requirements
 
-3. Run Ansible via:
+```
+ansible-galaxy install -r requirements.yml
+```
+
+1. Modify envrc and inventory to have the values required
+
+1. Run Ansible via:
 
 ```
 ansible-playbook -i inventory initial-server-setup.yml

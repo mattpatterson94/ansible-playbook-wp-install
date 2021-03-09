@@ -1,0 +1,5 @@
+- name: viasite-ansible.zsh
+- name: gantsign.oh-my-zsh
+
+# from GitHub
+# - src: https://github.com/bennojoy/nginx
