@@ -1,0 +1,7 @@
+---
+- name: Upgrade apt packages
+  apt: upgrade=dist update_cache=yes cache_valid_time=3600
+
+- name: write system upgrade time file
+  shell: date > /root/system_upgrade_time.txt
+

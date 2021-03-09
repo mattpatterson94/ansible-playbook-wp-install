@@ -1,0 +1,5 @@
+---
+create_user: ruler
+copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+system_packages: [ 'curl', 'wget', 'git', 'ufw', 'sshfs']
+editors: [ 'vim', 'nano' ]

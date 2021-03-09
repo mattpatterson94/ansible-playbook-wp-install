@@ -1,0 +1,28 @@
+---
+# Set logging
+- name: Set logging
+  ufw:
+    logging: "on"
+
+- name: UFW - Allow SSH connections
+  ufw:
+    rule: allow
+    port: "{{ ansible_port }}"
+
+- name: UFW - Allow http traffic
+  ufw:
+    rule: allow
+    port: "80"
+    proto: tcp
+
+- name: UFW - Allow https traffic
+  ufw:
+    rule: allow
+    port: "443"
+    proto: tcp
+
+- name: UFW - Deny all other incoming traffic by default
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming

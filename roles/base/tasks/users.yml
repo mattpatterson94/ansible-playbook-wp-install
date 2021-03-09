@@ -1,0 +1,29 @@
+---
+- name: Make sure we have a 'developers' group
+  group:
+    name: developers
+    state: present
+
+- name: Create a new regular user with sudo privileges
+  user:
+    name: "{{ create_user }}"
+    state: present
+    groups: developers, sudo
+    append: true
+    create_home: true
+    update_password: always
+    password: "{{ create_user_password }}"
+    shell: /bin/bash
+
+- name: Set authorized key for remote user
+  authorized_key:
+    user: "{{ create_user }}"
+    state: present
+    key: "{{ copy_local_key }}"
+
+- name: Disable password authentication for root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'

@@ -1,0 +1,6 @@
+---
+- include: upgrade_system.yml
+- include: packages_system.yml
+- include: packages_editors.yml
+- include: users.yml
+- include: firewall.yml

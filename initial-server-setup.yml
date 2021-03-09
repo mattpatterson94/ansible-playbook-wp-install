@@ -1,0 +1,35 @@
+###########################################################################################################
+# Playbook: WP Install
+###################################################################################################################
+
+---
+- name: ConfigureSsh
+  hosts: main
+  remote_user: root
+  gather_facts: false
+  roles:
+    - configure_ssh_port
+
+- name: ConfigureBase
+  hosts: main
+  remote_user: root
+  gather_facts: true
+  vars_files:
+    - vars/global.yml
+  vars:
+    create_user: "{{ lookup('vars', 'username') }}"
+    create_user_password: "{{ lookup('env', 'USER_PASSWORD_ENCRYPTED') }}"
+  roles:
+    - base
+
+# - name: InstallZsh
+#   hosts: main
+#   remote_user: "{{ lookup('vars', 'username') }}"
+#   gather_facts: true
+#   vars_files:
+#     - vars/global.yml
+#   vars:
+#     oh_my_zsh_install: yes
+#   roles:
+#     - viasite-ansible.zsh
+#     - gantsign.oh-my-zsh

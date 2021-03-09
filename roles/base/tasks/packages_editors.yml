@@ -1,0 +1,3 @@
+---
+- name: Install required editors
+  apt: name={{ editors }} state=latest
