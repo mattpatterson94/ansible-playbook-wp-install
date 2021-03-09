@@ -36,8 +36,12 @@
     - vars/global.yml
   vars:
     oh_my_zsh_install: yes
+    zsh_antigen_bundles_extras:
+      - joel-porquet/zsh-dircolors-solarized
   tags:
     - zsh
   roles:
     - viasite-ansible.zsh
-    - gantsign.oh-my-zsh
+    - role: gantsign.oh-my-zsh
+      users:
+        - username: "{{ lookup('vars', 'username') }}"
