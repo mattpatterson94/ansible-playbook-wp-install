@@ -27,6 +27,18 @@ cp inventory.example inventory
 ansible-playbook -i inventory initial-server-setup.yml
 ```
 
+Run certain tags
+
+```
+ansible-playbook -i inventory initial-server-setup.yml --tags "zsh"
+```
+
+Run with ssh/become password
+
+```
+ansible-playbook -i inventory initial-server-setup.yml  -kK
+```
+
 ### Considerations
 
 Generate Password:
