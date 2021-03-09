@@ -7,6 +7,8 @@
   hosts: main
   remote_user: root
   gather_facts: false
+  tags:
+    - ssh
   roles:
     - configure_ssh_port
 
@@ -19,17 +21,23 @@
   vars:
     create_user: "{{ lookup('vars', 'username') }}"
     create_user_password: "{{ lookup('env', 'USER_PASSWORD_ENCRYPTED') }}"
+  tags:
+    - base
   roles:
     - base
 
-# - name: InstallZsh
-#   hosts: main
-#   remote_user: "{{ lookup('vars', 'username') }}"
-#   gather_facts: true
-#   vars_files:
-#     - vars/global.yml
-#   vars:
-#     oh_my_zsh_install: yes
-#   roles:
-#     - viasite-ansible.zsh
-#     - gantsign.oh-my-zsh
+- name: InstallZsh
+  hosts: main
+  remote_user: "{{ lookup('vars', 'username') }}"
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/global.yml
+  vars:
+    oh_my_zsh_install: yes
+  tags:
+    - zsh
+  roles:
+    - viasite-ansible.zsh
+    - gantsign.oh-my-zsh
