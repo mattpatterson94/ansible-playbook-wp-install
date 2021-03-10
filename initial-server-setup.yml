@@ -96,5 +96,7 @@
   roles:
     - nginx
 
+    # TODO
     # - nodejs
     # - composer
+    # - Wordpress
