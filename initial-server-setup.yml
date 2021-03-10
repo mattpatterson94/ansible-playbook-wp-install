@@ -32,6 +32,7 @@
   gather_facts: true
   become: yes
   become_method: sudo
+  become_user: "{{ ansible_user }}"
   vars_files:
     - vars/global.yml
   vars:
@@ -41,12 +42,13 @@
   tags:
     - zsh
   roles:
-    - viasite-ansible.zsh
+    - role: viasite-ansible.zsh
+      zsh_user: "{{ lookup('vars', 'username') }}"
     - role: gantsign.oh-my-zsh
       users:
         - username: "{{ lookup('vars', 'username') }}"
 
-- name: InstallWP
+- name: InstallMysql
   hosts: main
   remote_user: "{{ lookup('vars', 'username') }}"
   gather_facts: true
@@ -55,6 +57,44 @@
   vars_files:
     - vars/global.yml
   vars:
+    - mariadb_root_password: "{{ lookup('env', 'MYSQL_DB_ROOT_PASS') }}"
+    - mariadb_databases:
+      - name: "{{ lookup('env', 'MYSQL_DB_NAME') }}"
+    - mariadb_users:
+      - name: "{{ lookup('env', 'MYSQL_DB_USER') }}"
+        password: "{{ lookup('env', 'MYSQL_DB_USER_PASS') }}"
+        priv: "{{ lookup('env', 'MYSQL_DB_NAME') }}.*:ALL"
+        append_privs: 'yes'
   tags:
-    - wp
+    - mysql
   roles:
+    - mysql
+
+- name: InstallPhp
+  hosts: main
+  remote_user: "{{ lookup('vars', 'username') }}"
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/global.yml
+  tags:
+    - php
+  roles:
+    - php74
+
+- name: InstallNginx
+  hosts: main
+  remote_user: "{{ lookup('vars', 'username') }}"
+  gather_facts: true
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/global.yml
+  tags:
+    - nginx
+  roles:
+    - nginx
+
+    # - nodejs
+    # - composer

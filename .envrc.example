@@ -1,1 +1,5 @@
 export USER_PASSWORD_ENCRYPTED=""
+export MYSQL_DB_ROOT_PASS=""
+export MYSQL_DB_NAME=""
+export MYSQL_DB_USER=""
+export MYSQL_DB_USER_PASS=""

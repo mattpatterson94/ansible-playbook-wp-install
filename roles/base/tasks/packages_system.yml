@@ -1,3 +1,5 @@
 ---
 - name: Install required system packages
-  apt: name={{ system_packages }} state=latest
+  apt:
+    name: "{{ system_packages }}"
+    state: present

@@ -1,0 +1,23 @@
+- name: Create daemon group with specified gid
+  group:
+    name: "{{ mariadb_system_user.name }}"
+    gid: "{{ mariadb_system_user.gid }}"
+    system: true
+    state: present
+
+- name: Create daemon user with specified uid
+  user:
+    name: "{{ mariadb_system_user.name }}"
+    uid: "{{ mariadb_system_user.uid }}"
+    system: true
+    group: "{{ mariadb_system_user.name }}"
+    comment: "{{ mariadb_system_user.comment }}"
+    home: "{{ mariadb_system_user.home }}"
+    create_home: false
+    shell: "{{ mariadb_system_user.shell }}"
+    state: present
+
+- name: Install packages
+  apt:
+    name: "{{ mariadb_packages }}"
+    state: present

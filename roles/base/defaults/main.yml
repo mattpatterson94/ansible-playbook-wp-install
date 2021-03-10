@@ -1,5 +1,15 @@
 ---
-create_user: ruler
+create_user: deployer
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-system_packages: [ 'curl', 'wget', 'git', 'ufw', 'sshfs']
-editors: [ 'vim', 'nano' ]
+system_packages:
+  - curl
+  - wget
+  - git
+  - ufw
+  - sshfs
+  - unzip
+  - apt-transport-https
+  - ca-certificates
+editors:
+  - vim
+  - nano
