@@ -10,3 +10,13 @@ php_extension_packages:
   - php7.4-mbstring
   - php7.4-xml
   - php7.4-xmlrpc
+php_error_log: '/var/log/php_errors.log'
+php_ini_updates:
+  - option: 'cgi.fix_pathinfo'
+    value: 0
+  - option: 'upload_max_filesize'
+    value: '20M'
+  - option: 'post_max_size'
+    value: '20M'
+  - option: 'error_log'
+    value: '/var/log/php_errors.log'

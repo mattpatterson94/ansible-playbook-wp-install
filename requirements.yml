@@ -1,5 +1,8 @@
-- name: viasite-ansible.zsh
-- name: gantsign.oh-my-zsh
+roles:
+  - name: viasite-ansible.zsh
+  - name: gantsign.oh-my-zsh
+  - name: sbaerlocher.wp-cli
 
-# from GitHub
-# - src: https://github.com/bennojoy/nginx
+collections:
+  - name: community.crypto
+  - name: community.general

@@ -8,7 +8,7 @@
   user:
     name: "{{ create_user }}"
     state: present
-    groups: developers, sudo
+    groups: developers, sudo, www-data
     append: true
     create_home: true
     update_password: always

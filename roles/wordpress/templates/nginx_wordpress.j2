@@ -1,0 +1,69 @@
+server {
+  listen [::]:443 ssl ipv6only=on;
+  listen 443 ssl;
+  ssl_certificate {{ ssl_certificate }};
+  ssl_certificate_key {{ ssl_certificate_key }};
+
+  client_max_body_size 20M;
+
+  root /var/www/{{ domain_name }}/wordpress;
+  index index.php index.html index.htm index.nginx-debian.html;
+
+  server_name {{ domain_name }} {{ www_domain_name }};
+
+  location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+  }
+
+  location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+  }
+
+  location ~ /\.ht {
+    deny all;
+  }
+
+  location = /robots.txt { log_not_found off; access_log off; allow all; }
+
+  location ~* \.(txt|xml|js)$ {
+    expires 8d;
+  }
+
+  location ~* \.(css)$ {
+      expires 8d;
+  }
+
+  location ~* \.(flv|ico|pdf|avi|mov|ppt|doc|mp3|wmv|wav|mp4|m4v|ogg|webm|aac|eot|ttf|otf|woff|svg)$ {
+    expires 8d;
+  }
+
+  location ~* \.(jpg|jpeg|png|gif|swf|webp)$ {
+    expires 8d;
+  }
+
+  location ~ \.user\.ini$ {
+    deny all;
+  }
+
+  # Rewrites for Yoast SEO XML Sitemap
+  rewrite ^/sitemap_index.xml$ /index.php?sitemap=1 last;
+  rewrite ^/([^/]+?)-sitemap([0-9]+)?.xml$ /index.php?sitemap=$1&sitemap_n=$2 last;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    if ($host = {{ www_domain_name }}) {
+      return 301 https://{{ domain_name }}$request_uri;
+    }
+
+    if ($host = {{ domain_name }}) {
+      return 301 https://$host$request_uri;
+    }
+
+    server_name {{ domain_name }} {{ www_domain_name }};
+
+    return 404;
+}

@@ -1,0 +1,8 @@
+---
+ssl_certificate: "{{ lookup('vars', 'letsencrypt_certs_dir') }}/fullchain_{{ lookup('vars', 'domain_name') }}"
+ssl_certificate_key: "{{ lookup('vars', 'letsencrypt_keys_dir') }}/{{ lookup('vars', 'domain_name') }}.key"
+wordpress_url: https://example.com
+wordpress_title: A Blog Site
+wordpress_user: admin
+wordpress_pass: password123
+wordpress_email: wordpress@email

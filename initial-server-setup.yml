@@ -20,7 +20,7 @@
     - vars/global.yml
   vars:
     create_user: "{{ lookup('vars', 'username') }}"
-    create_user_password: "{{ lookup('env', 'USER_PASSWORD_ENCRYPTED') }}"
+    create_user_password: "{{ lookup('env', 'USER_PASSWORD') | password_hash('sha512') }}"
   tags:
     - base
   roles:
@@ -31,8 +31,6 @@
   remote_user: "{{ lookup('vars', 'username') }}"
   gather_facts: true
   become: yes
-  become_method: sudo
-  become_user: "{{ ansible_user }}"
   vars_files:
     - vars/global.yml
   vars:
@@ -53,7 +51,6 @@
   remote_user: "{{ lookup('vars', 'username') }}"
   gather_facts: true
   become: yes
-  become_method: sudo
   vars_files:
     - vars/global.yml
   vars:
@@ -75,20 +72,19 @@
   remote_user: "{{ lookup('vars', 'username') }}"
   gather_facts: true
   become: yes
-  become_method: sudo
   vars_files:
     - vars/global.yml
   tags:
     - php
   roles:
     - php74
+    - sbaerlocher.wp-cli
 
 - name: InstallNginx
   hosts: main
   remote_user: "{{ lookup('vars', 'username') }}"
   gather_facts: true
   become: yes
-  become_method: sudo
   vars_files:
     - vars/global.yml
   tags:
@@ -96,7 +92,35 @@
   roles:
     - nginx
 
+- name: InstallWP
+  hosts: main
+  remote_user: "{{ lookup('vars', 'username') }}"
+  gather_facts: true
+  vars_files:
+    - vars/global.yml
+  vars:
+    mysql_db: "{{ lookup('env', 'MYSQL_DB_NAME') }}"
+    mysql_user: "{{ lookup('env', 'MYSQL_DB_USER') }}"
+    mysql_password: "{{ lookup('env', 'MYSQL_DB_USER_PASS') }}"
+    domain_name_zone: "{{ lookup('env', 'DOMAIN_NAME_ZONE') }}"
+    domain_name: "{{ lookup('env', 'DOMAIN_NAME') }}"
+    www_domain_name: "www.{{ lookup('env', 'DOMAIN_NAME') }}"
+    acme_email: "{{ lookup('env', 'ACME_EMAIL_ADDRESS') }}"
+    cloudflare_account_api_key: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_API_KEY') }}"
+    cloudflare_account_email: "{{ lookup('env', 'CLOUDFLARE_ACCOUNT_EMAIL') }}"
+    letsencrypt_keys_dir: /etc/letsencrypt/keys
+    letsencrypt_certs_dir: /etc/letsencrypt/certs
+    wordpress_url: "{{ lookup('env', 'WORDPRESS_URL') }}"
+    wordpress_title: "{{ lookup('env', 'WORDPRESS_TITLE') }}"
+    wordpress_user: "{{ lookup('env', 'WORDPRESS_USER') }}"
+    wordpress_pass: "{{ lookup('env', 'WORDPRESS_PASS') }}"
+    wordpress_email: "{{ lookup('env', 'WORDPRESS_EMAIL') }}"
+  roles:
+    # - letsencrypt
+    - wordpress
+  tags:
+    - wp
+
     # TODO
     # - nodejs
     # - composer
-    # - Wordpress

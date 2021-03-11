@@ -1,0 +1,74 @@
+---
+- name: Create Nginx Document Root
+  file:
+    path: "/var/www/{{ domain_name }}"
+    state: directory
+    owner: "deployer"
+    group: "www-data"
+    mode: '0755'
+  become: yes
+  tags:
+    - wp
+
+- name: Remove default nginx config
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  tags:
+    - wp
+
+- name: Install nginx config file
+  template:
+    src: nginx_wordpress.j2
+    dest: "/etc/nginx/sites-available/nginx_wordpress"
+    backup: yes
+  become: yes
+  tags:
+    - wp
+
+- name: Create link to sites enabled
+  file:
+    src: "/etc/nginx/sites-available/nginx_wordpress"
+    dest: "/etc/nginx/sites-enabled/nginx_wordpress"
+    state: link
+    force: yes
+  become: yes
+  notify: restart nginx
+
+- name: Download and unpack latest WordPress
+  command: wp core download --path="/var/www/{{ domain_name }}/wordpress"
+  ignore_errors: "yes"
+  tags:
+    - wp
+
+- name: Configure wordpress
+  command: wp core config --dbname="{{ mysql_db }}" --dbuser="{{ mysql_user }}" --dbpass="{{ mysql_password }}" --path="/var/www/{{ domain_name }}/wordpress"
+  ignore_errors: "yes"
+  tags:
+    - wp
+
+- name: Install wordpress
+  command: wp core install --url="{{ wordpress_url }}" --title="{{ wordpress_title }}" --admin_user="admin" --admin_password="password" --admin_email="{{ wordpress_email }}" --path="/var/www/{{ domain_name }}/wordpress"
+  tags:
+    - wp
+
+- name: Set ownership
+  file:
+    path: "/var/www/{{ domain_name }}"
+    state: directory
+    recurse: yes
+    owner: deployer
+    group: www-data
+  become: yes
+  tags:
+    - wp
+
+- name: Set permissions for directories
+  shell: "/usr/bin/find /var/www/{{ domain_name }}/wordpress/ -type d -exec chmod 770 {} \\;"
+  tags:
+    - wp
+
+- name: Set permissions for files
+  shell: "/usr/bin/find /var/www/{{ domain_name }}/wordpress/ -type f -exec chmod 660 {} \\;"
+  tags:
+    - wp

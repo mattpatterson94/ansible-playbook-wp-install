@@ -24,3 +24,20 @@
   apt:
     name: "{{ php_extension_packages }}"
     state: present
+
+- name: Update PHP ini
+  community.general.ini_file:
+    path: /etc/php/7.4/fpm/php.ini
+    section: 'PHP'
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    backup: yes
+  with_items: "{{ php_ini_updates }}"
+  notify: restart php-fpm
+
+- name: Creating error log
+  file:
+    path: "{{ php_error_log }}"
+    state: touch
+    mode: 0755
+    owner: www-data
