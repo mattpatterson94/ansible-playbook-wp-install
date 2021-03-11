@@ -17,18 +17,21 @@
 
 - name: "Generate a Let's Encrypt account key"
   shell: "if [ ! -f {{ letsencrypt_account_key }} ]; then openssl genrsa 4096 | sudo tee {{ letsencrypt_account_key }}; fi"
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
 
 - name: "Generate Let's Encrypt private key"
   shell: "openssl genrsa 4096 | sudo tee /etc/letsencrypt/keys/{{ domain_name }}.key"
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
 
 - name: "Generate Let's Encrypt CSR"
   shell: "openssl req -new -sha256 -key /etc/letsencrypt/keys/{{ domain_name }}.key -subj \"/CN={{ domain_name }}\" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf \"\n[SAN]\nsubjectAltName=DNS:{{ domain_name }},DNS:{{ www_domain_name }}\")) | sudo tee /etc/letsencrypt/csrs/{{ domain_name }}.csr"
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
   args:
     executable: /bin/bash
 
@@ -45,8 +48,9 @@
     # Renew if the certificate is at least 30 days old
     remaining_days: 60
   register: acme_challenge_domain_dns
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
 
 - name: Create TXT record with the dns validation"
   community.general.cloudflare_dns:
@@ -60,8 +64,9 @@
     ttl: 60
     state: present
   when: acme_challenge_domain_dns is changed and domain_name in acme_challenge_domain_dns.challenge_data
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
 
 - name: Create www TXT record with the dns validation"
   community.general.cloudflare_dns:
@@ -75,8 +80,9 @@
     ttl: 60
     state: present
   when: acme_challenge_domain_dns is changed and www_domain_name in acme_challenge_domain_dns.challenge_data
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
 
 - name: Let the challenge be validated and retrieve the cert and intermediate certificate
   community.crypto.acme_certificate:
@@ -92,5 +98,6 @@
     remaining_days: 60
     data: "{{ acme_challenge_domain_dns }}"
   when: acme_challenge_domain_dns is changed
+  become: yes
   tags:
-      - letsencrypt
+    - letsencrypt
