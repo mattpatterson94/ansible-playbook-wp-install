@@ -2,6 +2,7 @@ roles:
   - name: viasite-ansible.zsh
   - name: gantsign.oh-my-zsh
   - name: sbaerlocher.wp-cli
+  - name: geerlingguy.composer
 
 collections:
   - name: community.crypto

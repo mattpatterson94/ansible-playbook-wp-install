@@ -79,6 +79,19 @@
   roles:
     - php74
     - sbaerlocher.wp-cli
+    - geerlingguy.composer
+
+- name: InstallNodejs
+  hosts: main
+  remote_user: "{{ lookup('vars', 'username') }}"
+  gather_facts: true
+  become: yes
+  vars_files:
+    - vars/global.yml
+  tags:
+    - nodejs
+  roles:
+    - nodejs
 
 - name: InstallNginx
   hosts: main
@@ -116,11 +129,7 @@
     wordpress_pass: "{{ lookup('env', 'WORDPRESS_PASS') }}"
     wordpress_email: "{{ lookup('env', 'WORDPRESS_EMAIL') }}"
   roles:
-    # - letsencrypt
+    - letsencrypt
     - wordpress
   tags:
     - wp
-
-    # TODO
-    # - nodejs
-    # - composer

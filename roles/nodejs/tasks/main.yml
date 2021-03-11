@@ -1,0 +1,10 @@
+---
+
+- name: Run nodesource setup
+  become: yes
+  shell: "curl -sL https://deb.nodesource.com/setup_{{ node_version }} | bash"
+
+- name: Install nodejs
+  apt:
+    name: nodejs
+    state: latest
