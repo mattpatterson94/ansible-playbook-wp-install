@@ -5,6 +5,7 @@ Ansible setup for setting up a VPS for WP Install
 ### Requirements
 
 * Ansible
+* Direnv
 
 ### Includes
 
