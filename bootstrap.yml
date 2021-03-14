@@ -1,0 +1,35 @@
+###########################################################################################################
+# Playbook: Bootstrap
+# - Configures OS (Upgrades, Packages, Firewall)
+# - Install ZSH (including oh-my-zsh)
+# - Install MySQL
+# - Install PHP
+# - Install Nodejs
+# - Install Nginx
+# - Configure LetsEncrypt
+# - Install WP
+###################################################################################################################
+
+- name: Bootstrap VPS
+  import_playbook: playbooks/bootstrap-vps.yml
+
+- name: Install ZSH
+  import_playbook: playbooks/install-zsh.yml
+
+- name: Install MySQL
+  import_playbook: playbooks/install-mysql.yml
+
+- name: Install PHP
+  import_playbook: playbooks/install-php.yml
+
+- name: Install NodeJs
+  import_playbook: playbooks/install-nodejs.yml
+
+- name: Install Nginx
+  import_playbook: playbooks/install-nginx.yml
+
+- name: Configure TLS Cert
+  import_playbook: playbooks/configure-letsencrypt.yml
+
+- name: Install WP
+  import_playbook: playbooks/install-wordpress.yml

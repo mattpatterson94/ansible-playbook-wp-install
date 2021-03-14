@@ -1,0 +1,14 @@
+---
+
+- name: ConfigureLetsEncrypt
+  hosts: webservers
+  remote_user: "{{ system_user }}"
+  gather_facts: true
+  vars:
+    domain_name_zone: "{{ domain_name_zone }}"
+    alt_domain_name: "www.{{ domain_name }}"
+    acme_email: "{{ notify_email_address }}"
+  roles:
+    - letsencrypt
+  tags:
+    - configure-lets-encrypt

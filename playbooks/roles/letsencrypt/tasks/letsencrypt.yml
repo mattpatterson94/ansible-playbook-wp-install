@@ -22,13 +22,13 @@
     - letsencrypt
 
 - name: "Generate Let's Encrypt private key"
-  shell: "openssl genrsa 4096 | sudo tee /etc/letsencrypt/keys/{{ domain_name }}.key"
+  shell: "openssl genrsa 4096 | sudo tee {{ tls_certificate_key }}"
   become: yes
   tags:
     - letsencrypt
 
 - name: "Generate Let's Encrypt CSR"
-  shell: "openssl req -new -sha256 -key /etc/letsencrypt/keys/{{ domain_name }}.key -subj \"/CN={{ domain_name }}\" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf \"\n[SAN]\nsubjectAltName=DNS:{{ domain_name }},DNS:{{ www_domain_name }}\")) | sudo tee /etc/letsencrypt/csrs/{{ domain_name }}.csr"
+  shell: "openssl req -new -sha256 -key {{ tls_certificate_key }} -subj \"/CN={{ domain_name }}\" -reqexts SAN -config <(cat /etc/ssl/openssl.cnf <(printf \"\n[SAN]\nsubjectAltName=DNS:{{ domain_name }},DNS:{{ alt_domain_name }}\")) | sudo tee /etc/letsencrypt/csrs/{{ domain_name }}.csr"
   become: yes
   tags:
     - letsencrypt
@@ -71,15 +71,15 @@
 - name: Create www TXT record with the dns validation"
   community.general.cloudflare_dns:
     domain: "{{ domain_name_zone }}"
-    record: "{{ acme_challenge_domain_dns.challenge_data[www_domain_name][acme_challenge_type].record }}"
+    record: "{{ acme_challenge_domain_dns.challenge_data[alt_domain_name][acme_challenge_type].record }}"
     type: TXT
-    value: "{{ acme_challenge_domain_dns.challenge_data[www_domain_name][acme_challenge_type].resource_value | regex_replace('^(.*)$', '\"\\1\"') }}"
+    value: "{{ acme_challenge_domain_dns.challenge_data[alt_domain_name][acme_challenge_type].resource_value | regex_replace('^(.*)$', '\"\\1\"') }}"
     solo: true
     account_email: "{{ cloudflare_account_email }}"
     account_api_key: "{{ cloudflare_account_api_key }}"
     ttl: 60
     state: present
-  when: acme_challenge_domain_dns is changed and www_domain_name in acme_challenge_domain_dns.challenge_data
+  when: acme_challenge_domain_dns is changed and alt_domain_name in acme_challenge_domain_dns.challenge_data
   become: yes
   tags:
     - letsencrypt
@@ -91,7 +91,7 @@
     src: "{{ letsencrypt_csrs_dir }}/{{ domain_name }}.csr"
     dest: "{{ letsencrypt_certs_dir }}/{{ domain_name }}.crt"
     chain_dest: "{{ letsencrypt_certs_dir }}/chain_{{ domain_name }}.crt"
-    fullchain_dest: "{{ letsencrypt_certs_dir }}/fullchain_{{ domain_name }}"
+    fullchain_dest: "{{ tls_certificate }}"
     challenge: "{{ acme_challenge_type }}"
     acme_directory: "{{ acme_directory }}"
     acme_version: "{{ acme_version }}"

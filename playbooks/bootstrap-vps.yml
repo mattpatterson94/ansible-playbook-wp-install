@@ -1,0 +1,24 @@
+---
+
+- name: ConfigureSsh
+  hosts: webservers
+  remote_user: root
+  gather_facts: false
+  tags:
+    - configure-ssh
+    - vps-bootstrap
+  roles:
+    - configure_ssh_port
+
+- name: ConfigureBase
+  hosts: webservers
+  remote_user: root
+  gather_facts: true
+  vars:
+    create_user: "{{ system_user }}"
+    create_user_password: "{{ system_user_password | password_hash('sha512') }}"
+  tags:
+    - configure-base
+    - vps-bootstrap
+  roles:
+    - base

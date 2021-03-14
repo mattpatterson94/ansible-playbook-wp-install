@@ -1,11 +1,10 @@
 ## WP Install
 
-Ansible setup for setting up a VPS for WP Install
+An Ansible Playbook for setting up a VPS configured to serve a secure WordPress installation
 
 ### Requirements
 
 * Ansible
-* Direnv
 
 ### Includes
 
@@ -39,7 +38,7 @@ Ansible setup for setting up a VPS for WP Install
   * Disables Apache
   * Enables Nginx on boot
 * LetsEncrypt
-  * Create TLS Cert for domain/www.domain
+  * Create TLS Cert for domain/alt.domain
   * Uses DNS Validation via Cloudflare
 * Wordpress
   * Configure Nginx server config with Https
@@ -49,31 +48,34 @@ Ansible setup for setting up a VPS for WP Install
 
 ### Installation
 
-1. Copy example files
-
-```
-cp .envrc.example .envrc
-cp inventory.example inventory
-```
-
 1. Install Requirements
 
 ```
 ansible-galaxy install -r requirements.yml
 ```
 
-1. Modify envrc and inventory to have the values required
+2. Configure Host
+
+Either modify the example host or create a new host. Either way use the example host as a reference for the next steps.
+
+2a. Add host/IP to `config/inventory.yml`.
+
+2b. Update `host_vars`. Create a `$host/main.yml` for non-sensitive vars, and `$host/vault` for sensitive vars.
+
+2c. Encrypt `vault` file once all the sensitive vars have been added and record the vault password somewhere safe.
+
+```bash
+ansible-vault encrypt config/host_vars/$host/vault
+```
 
 1. Run Ansible via:
 
-_Specify create_user_password when prompted for password_
-
-```
-ansible-playbook -i inventory initial-server-setup.yml -K
+```bash
+ansible-playbook -K -i config/inventory.yml -l $host --ask-vault-pass bootstrap.yml
 ```
 
 Run certain tags
 
-```
-ansible-playbook -i inventory initial-server-setup.yml --tags "zsh"
+```bash
+ansible-playbook -K -i config/inventory.yml -l $host --ask-vault-pass bootstrap.yml --tags "install-wordpress"
 ```

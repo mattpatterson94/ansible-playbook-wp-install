@@ -1,0 +1,22 @@
+---
+# Configure OS
+system_user_password: "{{ vault_system_user_password }}"
+
+# DB
+db_name: "db_1"
+db_user: "db_user"
+db_root_password: "{{ vault_db_root_password }}"
+db_user_password: "{{ vault_db_user_password }}"
+
+# TLS
+domain_name_zone: "example.com"
+notify_email_address: "hey@example.com"
+cloudflare_account_email: "hey@example.com"
+cloudflare_account_api_key: "{{ vault_cloudflare_account_api_key }}"
+
+# Wordpress
+domain_name: "example.com"
+site_title: "A new site"
+site_email: "hey@example.com"
+site_user: "admin"
+site_password: "{{ vault_site_password }}"

@@ -1,0 +1,6 @@
+---
+vault_system_user_password:
+vault_site_password:
+vault_db_root_password:
+vault_db_user_password:
+vault_cloudflare_account_api_key:

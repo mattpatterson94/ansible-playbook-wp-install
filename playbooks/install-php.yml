@@ -1,0 +1,13 @@
+---
+
+- name: InstallPhp
+  hosts: webservers
+  remote_user: "{{ system_user }}"
+  gather_facts: true
+  become: yes
+  tags:
+    - install-php
+  roles:
+    - php74
+    - sbaerlocher.wp-cli
+    - geerlingguy.composer

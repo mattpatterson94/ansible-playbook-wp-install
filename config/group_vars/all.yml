@@ -1,0 +1,7 @@
+---
+
+system_user: deployer
+ansible_python_interpreter: /usr/bin/python3
+ansible_port: "25000"
+tls_certificate: "/etc/letsencrypt/certs/fullchain_{{ domain_name }}"
+tls_certificate_key: "/etc/letsencrypt/keys/{{ domain_name }}.key"

@@ -1,0 +1,10 @@
+---
+domain_name: example.com
+alt_domain_name: www.{{ domain_name }}
+wordpress_url: https://{{ domain_name }}
+wordpress_title: A Blog Site
+wordpress_user: admin
+wordpress_password: password123
+wordpress_email: wordpress@email
+tls_certificate: /etc/ssl/certs/fullchain_{{ domain_name }}
+tls_certificate_key: /etc/ssl/keys/{{ domain_name }}.key
